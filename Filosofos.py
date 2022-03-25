@@ -35,15 +35,17 @@ class ChopStick(object):
         self.lock.wait()
       self.user=user
       self.taken = True
-      sys.stdout.write("El filosofo numero[%s] toma el palillo %s \n "% (user,self.number))
-      self.lock.notifyAll()
+      sys.stdout.write("El filosofo numero {} toma el palillo {}.\n ".format(user,self.number))
+      self.lock.notify_all()
 
   def drop(self,user):
     with self.lock:
       while self.taken == False:
         self.lock.wait()
       self.user = -1
-      self.lock.notifyAll()
+      self.taken = False
+      sys.stdout.write("El filosofo numero {} toma el palillo {}.\n ".format(user,self.number))
+      self.lock.notify_all()
         
         
         
@@ -60,17 +62,17 @@ class philosopher (threading.Thread):  #Clase filosofo por medio de hilos
   def run (self):
     for i in range(1):
       self.butler.down()  #Empieza el servicio
-      print("Filosofo" , self.number, "piensa" )
+      print("Filosofo {} piensa.".format(self.number) )
       time.sleep(0.1)              #Piensa
       self.left.take(self.number)  #Recoge el palillo izquierdo 
       time.sleep(0.1)
       self.right.take(self.number) #Recoge el palillo derecho 
-      print ("Filosofo" , self.number , "come")
+      print ("Filosofo {} come.".format(self.number))
       time.sleep(0.1)
       self.right.drop(self.number) #Deja el palillo derecho
       self.left.drop (self.number) #Deja el palillo izquierdo
       self.butler.up() #Termina el servicio 
-    sys.stdout.write("Filosofo[%s] Termina de pensar y comer\n" % self.number)
+    sys.stdout.write("Filosofo {} Termina de pensar y comer.\n".format(self.number))
     
     
     
@@ -85,12 +87,15 @@ def main():
 
   #lista de filosofos
 
-  p = [Philosofer(i,c[i],c[(i+1)%n],butler)for i in range(n)]
+  p = [philosopher (i,c[i],c[(i+1)%n],butler)for i in range(n)]
 
   for i in range(n):
     p[i].start()
+
+
 if __name__ =="__main__":
   main() 
+
 
     
     
