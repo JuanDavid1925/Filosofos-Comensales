@@ -75,7 +75,7 @@ class philosopher (threading.Thread):  #Clase filosofo por medio de hilos
     
     
 def main():
-  #numero de filosos y palillos
+  #numero de filosofos y palillos
   n=6
 
   butler = semaphore(n-1)
@@ -83,12 +83,12 @@ def main():
   #lista de palillos
   c = [ChopStick(i)for i in range(n)]
 
-  #lista de filososfos
+  #lista de filosofos
 
   p = [Philosofer(i,c[i],c[(i+1)%n],butler)for i in range(n)]
 
   for i in range(n):
-   p[i].start()
+    p[i].start()
 if __name__ =="__main__":
   main() 
 
